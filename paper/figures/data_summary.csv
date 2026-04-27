@@ -1,0 +1,4 @@
+split,count,min_width,max_width,min_height,max_height
+clean,20,512,768,512,768
+synthetic_low,20,512,768,512,768
+real_low,6,1024,1706,1279,1706
