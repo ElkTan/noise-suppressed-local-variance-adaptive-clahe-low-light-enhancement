@@ -60,7 +60,8 @@ def _apply_tile_clahe(y: np.ndarray, clip_map: np.ndarray, tile_grid: tuple[int,
         c = index % tile_grid[1]
         tile = y[rows, cols]
         clip_limit = max(float(clip_map[r, c]), 0.01)
-        clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=(8, 8))
+        # Use one histogram region per tile so the tile-specific clip limit actually changes the mapping.
+        clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=(1, 1))
         output[rows, cols] = clahe.apply(tile)
     return output
 
@@ -130,4 +131,3 @@ def run_raw_variance_adaptive_clahe_with_aux(
     y_out = _apply_tile_clahe(y, clip_map=clip_map, tile_grid=tile_grid)
     aux = {"clip_map": clip_map, "structure_map": variance_map, "noise_sigma": 0.0}
     return _merge_ycrcb(y_out, cr, cb), aux
-

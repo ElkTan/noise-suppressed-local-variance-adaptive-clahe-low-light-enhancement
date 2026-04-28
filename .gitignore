@@ -7,7 +7,11 @@ __pycache__/
 
 data/
 results/
+photo1/
+photo2/
 
 *.log
 *.tmp
 *.swp
+*.zip
+paper/figures/figure1_overall_pipeline_body.svg.png

@@ -96,6 +96,63 @@ def plot_sensitivity(rows: list[dict[str, str]], output_dir: str | Path) -> None
             plt.close(fig)
 
 
+def plot_fusion(rows: list[dict[str, str]], output_dir: str | Path) -> None:
+    if not rows:
+        return
+    output_dir = ensure_dir(output_dir)
+    methods = [row["method"] for row in rows]
+    for key, title in [("psnr", "PSNR"), ("ssim", "SSIM"), ("nar", "NAR"), ("mean_y", "Mean Y")]:
+        if key not in rows[0]:
+            continue
+        values = [float(row[key]) for row in rows]
+        fig, ax = plt.subplots(figsize=(8, 4.5))
+        ax.bar(methods, values, color="#6a4c93")
+        ax.set_title(f"Fusion Strategy Comparison on {title}")
+        ax.set_ylabel(title)
+        ax.tick_params(axis="x", rotation=20)
+        fig.tight_layout()
+        fig.savefig(output_dir / f"fusion_{key}.png", dpi=200)
+        plt.close(fig)
+
+
+def plot_real_no_reference(rows: list[dict[str, str]], output_dir: str | Path) -> None:
+    if not rows:
+        return
+    output_dir = ensure_dir(output_dir)
+    methods = [row["method"] for row in rows]
+    for key, title in [("loe", "LOE"), ("niqe_like", "NIQE-like"), ("mean_y", "Mean Y")]:
+        if key not in rows[0]:
+            continue
+        values = [float(row[key]) for row in rows]
+        fig, ax = plt.subplots(figsize=(8, 4.5))
+        ax.bar(methods, values, color="#a44a3f")
+        ax.set_title(f"Real Low-Light No-Reference Comparison on {title}")
+        ax.set_ylabel(title)
+        ax.tick_params(axis="x", rotation=20)
+        fig.tight_layout()
+        fig.savefig(output_dir / f"real_no_reference_{key}.png", dpi=200)
+        plt.close(fig)
+
+
+def plot_synthetic_hard(rows: list[dict[str, str]], output_dir: str | Path) -> None:
+    if not rows:
+        return
+    output_dir = ensure_dir(output_dir)
+    methods = [row["method"] for row in rows]
+    for key, title in [("psnr", "PSNR"), ("ssim", "SSIM"), ("nar", "NAR"), ("mean_y", "Mean Y")]:
+        if key not in rows[0]:
+            continue
+        values = [float(row[key]) for row in rows]
+        fig, ax = plt.subplots(figsize=(8, 4.5))
+        ax.bar(methods, values, color="#486581")
+        ax.set_title(f"Hard Degradation Comparison on {title}")
+        ax.set_ylabel(title)
+        ax.tick_params(axis="x", rotation=20)
+        fig.tight_layout()
+        fig.savefig(output_dir / f"synthetic_hard_{key}.png", dpi=200)
+        plt.close(fig)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate paper figures from experiment CSV files.")
     parser.add_argument("--results-dir", default="results")
@@ -118,6 +175,18 @@ def main() -> None:
     )
     plot_sensitivity(
         read_csv_rows(results_dir / "metrics" / "sensitivity_summary.csv"),
+        figure_dir,
+    )
+    plot_fusion(
+        read_csv_rows(results_dir / "fusion" / "fusion_summary.csv"),
+        figure_dir,
+    )
+    plot_real_no_reference(
+        read_csv_rows(results_dir / "metrics" / "real_no_reference_summary.csv"),
+        figure_dir,
+    )
+    plot_synthetic_hard(
+        read_csv_rows(results_dir / "metrics" / "synthetic_hard_summary.csv"),
         figure_dir,
     )
 
