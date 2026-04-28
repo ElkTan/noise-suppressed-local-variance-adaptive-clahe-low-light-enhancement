@@ -7,8 +7,6 @@ __pycache__/
 
 data/
 results/
-photo1/
-photo2/
 
 *.log
 *.tmp
